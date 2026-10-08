@@ -1,4 +1,4 @@
-# Opposing Reclassifications by a Multidimensional COPD Diagnostic Schema Carry Asymmetric Blood Transcriptomic Signatures
+# Blood Transcriptomics Supports Both Directions of Reclassification by a Multidimensional COPD Diagnostic Schema
 
 ### Whole-Blood RNA-seq Analysis and Calibrated Pathway Heat Diffusion in COPDGene
 
@@ -6,7 +6,7 @@
 
 ## 1. Summary
 
-This repository provides the **R scripts** (v.4.5) and **Python scripts** (v.3.11+) used for the analyses in the manuscript *"Opposing reclassifications by a multidimensional COPD diagnostic schema carry asymmetric blood transcriptomic signatures"*.
+This repository provides the **R scripts** (v.4.5) and **Python scripts** (v.3.11+) used for the analyses in the manuscript *"Blood transcriptomics supports both directions of reclassification by a multidimensional COPD diagnostic schema"*.
 
 The study compares whole-blood transcriptomes of COPDGene participants grouped by the multidimensional COPD diagnostic schema (Bhatt et al., JAMA 2025) into four groups:
 - **no COPD**
