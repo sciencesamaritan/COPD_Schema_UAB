@@ -1,4 +1,4 @@
-# Divergent SIRT1, N-Glycosylation, and Calcium-Signaling Programs and Group-Dependent Neutrophil-Interferon Signal in Blood Transcriptomics Across Newly Diagnosed, Potentially Excluded, and Established COPD in the COPDGene Multidimensional Diagnostic Schema
+# Divergent SIRT1, Glycosylation, and Calcium-Signaling Programs and Blood Neutrophil-Interferon Signal Across Multidimensional COPD Schema Groups
 
 ### Whole-Blood RNA-seq Analysis and Calibrated Pathway Heat Diffusion in COPDGene
 
@@ -6,7 +6,7 @@
 
 ## 1. Summary
 
-This repository provides the **R scripts** (v.4.5) and **Python scripts** (v.3.11+) used for the analyses in the manuscript *"Divergent SIRT1, N-Glycosylation, and Calcium-Signaling Programs and Group-Dependent Neutrophil-Interferon Signal in Blood Transcriptomics Across Newly Diagnosed, Potentially Excluded, and Established COPD in the COPDGene Multidimensional Diagnostic Schema"*.
+This repository provides the **R scripts** (v.4.5) and **Python scripts** (v.3.11+) used for the analyses in the manuscript *"Divergent SIRT1, Glycosylation, and Calcium-Signaling Programs and Blood Neutrophil-Interferon Signal Across Multidimensional COPD Schema Groups"*.
 
 The study compares whole-blood transcriptomes of COPDGene participants grouped by the multidimensional COPD diagnostic schema (Bhatt et al., JAMA 2025) into four groups:
 - **no COPD**
