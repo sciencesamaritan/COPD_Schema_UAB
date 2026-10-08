@@ -1,4 +1,4 @@
-# Opposing Reclassifications by a Multidimensional COPD Diagnostic Schema Carry Asymmetric Blood Transcriptomic Signatures
+# Divergent SIRT1, N-Glycosylation, and Calcium-Signaling Programs and Group-Dependent Neutrophil-Interferon Signal in Blood Transcriptomics Across Newly Diagnosed, Potentially Excluded, and Established COPD in the COPDGene Multidimensional Diagnostic Schema
 
 ### Whole-Blood RNA-seq Analysis and Calibrated Pathway Heat Diffusion in COPDGene
 
@@ -6,7 +6,7 @@
 
 ## 1. Summary
 
-This repository provides the **R scripts** (v.4.5) and **Python scripts** (v.3.11+) used for the analyses in the manuscript *"Opposing reclassifications by a multidimensional COPD diagnostic schema carry asymmetric blood transcriptomic signatures"*.
+This repository provides the **R scripts** (v.4.5) and **Python scripts** (v.3.11+) used for the analyses in the manuscript *"Divergent SIRT1, N-Glycosylation, and Calcium-Signaling Programs and Group-Dependent Neutrophil-Interferon Signal in Blood Transcriptomics Across Newly Diagnosed, Potentially Excluded, and Established COPD in the COPDGene Multidimensional Diagnostic Schema"*.
 
 The study compares whole-blood transcriptomes of COPDGene participants grouped by the multidimensional COPD diagnostic schema (Bhatt et al., JAMA 2025) into four groups:
 - **no COPD**
