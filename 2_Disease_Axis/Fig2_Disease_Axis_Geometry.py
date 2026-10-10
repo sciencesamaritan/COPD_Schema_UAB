@@ -73,7 +73,7 @@ def panel_label(ax: mpl.axes.Axes, label: str, y: float = 1.08) -> None:
         y,
         label,
         transform=ax.transAxes,
-        fontsize=10,
+        fontsize=8,
         fontweight="bold",
         va="top",
         ha="left",
@@ -126,25 +126,25 @@ def draw_density_panel(
     ax.set_xlim(-limit, limit)
     ax.set_ylim(-limit, limit)
     ax.set_aspect("equal", adjustable="box")
-    ax.set_xlabel("Established COPD vs no COPD\ngene-expression $\\log_{2}$ fold change")
-    ax.set_ylabel(f"{group} vs no COPD\ngene-expression $\\log_{{2}}$ fold change")
+    ax.set_xlabel("Established COPD vs no COPD\ngene-expression log₂ fold change")
+    ax.set_ylabel(f"{group} vs no COPD\ngene-expression log₂ fold change")
     ax.set_title(
         f"{group} effect profile",
         loc="left",
         y=1.08,
         pad=0,
-        fontsize=9.5,
+        fontsize=6.5,
         fontweight="bold",
     )
     ax.text(
         0.04,
         0.96,
-        f"λ = {lam:.2f} ({ci_lo:.2f}-{ci_hi:.2f})\n"
+        f"λ = {lam:.2f} ({ci_lo:.2f}–{ci_hi:.2f})\n"
         f"n = {len(profiles):,} axis genes",
         transform=ax.transAxes,
         va="top",
         ha="left",
-        fontsize=7.3,
+        fontsize=6,
         color="0.12",
     )
     style_axis(ax)
@@ -167,12 +167,12 @@ def build_figure() -> dict[str, object]:
 
     style = {
         "font.family": "sans-serif",
-        "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
-        "font.size": 8,
-        "axes.labelsize": 8,
-        "xtick.labelsize": 7,
-        "ytick.labelsize": 7,
-        "legend.fontsize": 7,
+        "font.sans-serif": ["Arial", "Helvetica", "Liberation Sans"], "mathtext.fontset": "custom", "mathtext.rm": "sans", "mathtext.it": "sans:italic", "mathtext.default": "regular",
+        "font.size": 6,
+        "axes.labelsize": 6,
+        "xtick.labelsize": 5.5,
+        "ytick.labelsize": 5.5,
+        "legend.fontsize": 5.5,
         "pdf.fonttype": 42,
         "ps.fonttype": 42,
         "svg.fonttype": "none",
@@ -224,8 +224,10 @@ def build_figure() -> dict[str, object]:
         hb_b.set_clim(1, density_max)
         colorbar = fig.colorbar(hb_b, cax=colorbar_axis)
         colorbar.ax.yaxis.set_label_position("left")
-        colorbar.set_label("Genes per hexagon (log scale)", fontsize=7.5, labelpad=9)
-        colorbar.ax.tick_params(labelsize=6.5, length=2)
+        colorbar.set_label("Genes per hexagon (log scale)", fontsize=6, labelpad=6)
+        colorbar.ax.tick_params(labelsize=5.5, length=2)
+        colorbar.ax.yaxis.set_major_formatter(mpl.ticker.FuncFormatter(lambda v, _: f"{v:g}"))
+        colorbar.ax.yaxis.set_minor_formatter(mpl.ticker.NullFormatter())
 
         axes["A"].legend(
             loc="lower right",
@@ -234,7 +236,7 @@ def build_figure() -> dict[str, object]:
             borderaxespad=0.4,
         )
 
-        for label, key in zip("AB", ["A", "B"], strict=True):
+        for label, key in zip("ab", ["A", "B"], strict=True):
             panel_label(axes[key], label, y=1.13)
 
         fig.align_xlabels([axes["A"], axes["B"]])

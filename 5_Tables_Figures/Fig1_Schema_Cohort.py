@@ -68,7 +68,7 @@ def add_cell(
         group,
         ha="center",
         va="center",
-        fontsize=8.2,
+        fontsize=6.5,
         fontweight="bold",
         color=INK,
         linespacing=1.05,
@@ -79,7 +79,7 @@ def add_cell(
         f"n = {count:,}",
         ha="center",
         va="center",
-        fontsize=7.2,
+        fontsize=6,
         color=INK,
     )
     if reclassified:
@@ -89,7 +89,7 @@ def add_cell(
             "RECLASSIFIED",
             ha="center",
             va="bottom",
-            fontsize=5.8,
+            fontsize=5.5,
             fontweight="bold",
             color=color,
         )
@@ -105,8 +105,8 @@ def add_flow_box(
     lines: tuple[str, ...],
     fill: str = "white",
     edge: str = INK,
-    count_size: float = 8.5,
-    text_size: float = 6.5,
+    count_size: float = 7,
+    text_size: float = 6,
 ) -> None:
     x, y = xy
     ax.add_patch(
@@ -156,14 +156,14 @@ def build_figure() -> None:
 
     with plt.rc_context(
         {
-            "font.family": "Arial",
-            "font.size": 8,
+            "font.family": "sans-serif", "font.sans-serif": ["Arial", "Helvetica", "Liberation Sans"],
+            "font.size": 6,
             "axes.linewidth": 0.8,
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
         }
     ):
-        fig = plt.figure(figsize=(7.25, 6.0), facecolor="white")
+        fig = plt.figure(figsize=(7.2, 5.0), facecolor="white")
         grid = fig.add_gridspec(
             2,
             height_ratios=(1.08, 0.72),
@@ -182,7 +182,7 @@ def build_figure() -> None:
             ax.axis("off")
 
         # Panel A: a direct 2 x 2 definition of bidirectional reclassification.
-        ax_a.text(-0.01, 1.01, "A", fontsize=12, fontweight="bold", color=INK, clip_on=False)
+        ax_a.text(-0.01, 1.01, "a", fontsize=8, fontweight="bold", color=INK, clip_on=False)
         x0, xm, x1 = 0.30, 0.50, 0.70
         y0, ym, y1 = 0.14, 0.48, 0.82
         ax_a.text(
@@ -190,12 +190,12 @@ def build_figure() -> None:
             0.955,
             "Multidimensional COPD diagnosis",
             ha="center",
-            fontsize=8,
+            fontsize=6.5,
             fontweight="bold",
             color=INK,
         )
-        ax_a.text((x0 + xm) / 2, 0.875, "No", ha="center", fontsize=7.5, color=MUTED)
-        ax_a.text((xm + x1) / 2, 0.875, "Yes", ha="center", fontsize=7.5, color=MUTED)
+        ax_a.text((x0 + xm) / 2, 0.875, "No", ha="center", fontsize=6, color=MUTED)
+        ax_a.text((xm + x1) / 2, 0.875, "Yes", ha="center", fontsize=6, color=MUTED)
         ax_a.text(
             0.205,
             (y0 + y1) / 2,
@@ -203,13 +203,13 @@ def build_figure() -> None:
             ha="center",
             va="center",
             rotation=90,
-            fontsize=7.5,
+            fontsize=6,
             fontweight="bold",
             color=INK,
             linespacing=1.05,
         )
-        ax_a.text(0.27, (ym + y1) / 2, "No", ha="right", va="center", fontsize=7.5, color=MUTED)
-        ax_a.text(0.27, (y0 + ym) / 2, "Yes", ha="right", va="center", fontsize=7.5, color=MUTED)
+        ax_a.text(0.27, (ym + y1) / 2, "No", ha="right", va="center", fontsize=6, color=MUTED)
+        ax_a.text(0.27, (y0 + ym) / 2, "Yes", ha="right", va="center", fontsize=6, color=MUTED)
 
         add_cell(
             ax_a,
@@ -250,7 +250,7 @@ def build_figure() -> None:
             count=counts["Established COPD"],
         )
         # Panel B: observed analytic-cohort flow reconstructed from the source pipeline.
-        ax_b.text(-0.005, 0.97, "B", fontsize=12, fontweight="bold", color=INK, clip_on=False)
+        ax_b.text(-0.005, 0.97, "b", fontsize=8, fontweight="bold", color=INK, clip_on=False)
         main_y, main_h, main_w = 0.57, 0.27, 0.19
         main_x = (0.015, 0.275, 0.535, 0.795)
         main = (
@@ -309,15 +309,15 @@ def build_figure() -> None:
                 lines=lines,
                 fill="#F1F2F3",
                 edge=GRID,
-                count_size=7.8,
-                text_size=5.8,
+                count_size=7,
+                text_size=5.5,
             )
 
         fig.text(
             0.065,
             0.025,
-            "Primary model adjusted for age, race, sex and smoking status. Secondary Model adjusted for leukocyte percentages in the online data supplement.",
-            fontsize=6.7,
+            "Primary model adjusted for age, race, sex and smoking status. Secondary model additionally adjusted for leukocyte percentages (Supplementary Information).",
+            fontsize=6,
             color="black",
             fontstyle="italic",
         )
