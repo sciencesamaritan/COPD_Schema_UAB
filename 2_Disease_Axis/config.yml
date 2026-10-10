@@ -1,0 +1,38 @@
+# =============================================================================
+# Disease-axis scaling and FGSEA recompute: paths and parameters.
+# Edit the roots to match your file system. Every path used by the R scripts in
+# this folder resolves through this file.
+# =============================================================================
+meta:
+  name: "COPD multidimensional schema - disease-axis scaling"
+  case_definition: "DisCOPDAI"     # AI-derived visual CT classification (primary); DisCOPDQuant for sensitivity
+  model: "Model_1"                 # Model_1: age, race, sex, current smoking; Model_2 adds leukocyte %
+
+roots:
+  schema: "path/to/project"        # folder holding the summary statistics and outputs
+
+inputs:
+  # Summary statistics written by 1_Differential_Expression/COPDGene_RNAseq_DE_FGSEA_Workflow.R
+  extracted_dir: "{schema}/summary_statistics"
+  gene_de:   "{extracted_dir}/gene_de_{model}_{cd}_allresults.csv"
+  gsea:      "{extracted_dir}/gsea_{model}_{cd}_allresults.csv"
+  singscore: "{extracted_dir}/singscore_{model}_{cd}_allresults.csv"
+  # Optional: previously reported tables to check reproduced values against (skipped if absent)
+  shipped_tables: "{schema}/reference_tables"
+
+outputs:
+  dir:     "{schema}/disease_axis_outputs"
+  tables:  "{outputs_dir}/tables"
+  figures: "{outputs_dir}/figures"
+  logs:    "{outputs_dir}/logs"
+
+params:
+  # Group sizes under the primary case definition (no COPD, newly diagnosed, potentially excluded, established)
+  group_n:  {"0": 1736, "1": 181, "2": 150, "3": 1242}
+  contrasts: {"1vs0": "Newly diagnosed", "2vs0": "Potentially excluded", "3vs0": "Established COPD"}
+  reference_contrast: "3vs0"
+  fdr: 0.05
+  bootstrap_B: 2000
+  seed: 42
+  z975: 1.959964                   # CI half-width divisor for standard-error recovery
+  covariates_used: ["age_visit", "race", "gender", "SmokCigNow"]

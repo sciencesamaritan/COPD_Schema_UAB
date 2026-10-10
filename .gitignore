@@ -1,0 +1,14 @@
+# outputs and caches (no data are distributed with this repository)
+4_Heat_Diffusion/out/
+4_Heat_Diffusion/figures/
+tables/
+figures/
+*.rds
+*.pkl
+*.npz
+*.csv
+*.tsv
+*.sas7bdat
+__pycache__/
+.Rhistory
+.DS_Store
