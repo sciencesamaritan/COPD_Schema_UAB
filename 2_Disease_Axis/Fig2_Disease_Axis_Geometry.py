@@ -166,8 +166,8 @@ def build_figure() -> dict[str, object]:
     limit = np.ceil(np.nanmax(np.abs(finite_values)) * 10) / 10
 
     style = {
-        "font.family": "sans-serif",
-        "font.sans-serif": ["Arial", "Helvetica", "Liberation Sans"], "mathtext.fontset": "custom", "mathtext.rm": "sans", "mathtext.it": "sans:italic", "mathtext.default": "regular",
+        "font.family": ["Arial", "Arial Unicode MS", "Liberation Sans"],
+        "font.sans-serif": ["Arial", "Arial Unicode MS", "Helvetica", "Liberation Sans"], "mathtext.fontset": "custom", "mathtext.rm": "Arial", "mathtext.it": "Arial:italic", "mathtext.default": "regular",
         "font.size": 6,
         "axes.labelsize": 6,
         "xtick.labelsize": 5.5,

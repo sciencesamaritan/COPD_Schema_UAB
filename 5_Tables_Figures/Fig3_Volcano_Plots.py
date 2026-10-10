@@ -36,41 +36,57 @@ def place_labels(ax, pts, labels):
                     arrowprops=dict(arrowstyle="-", lw=0.3, color="#555", shrinkA=0.5, shrinkB=0.5), zorder=5)
 
 
-def build(source=SOURCE, out_stem=OUT_STEM):
-    ns.apply()
+def load_de(source=SOURCE):
     de = pd.read_csv(source)
     de = de[de.Contrast.isin(CONTRASTS)].copy()
     de["mlp"] = -np.log10(de["P.Value"].clip(lower=np.finfo(float).tiny))
     de["status"] = np.where(de["adj.P.Val"] < 0.05, np.where(de.logFC > 0, "up", "down"), "ns")
     de["capped"] = (de.logFC.abs() > XL) | (de.mlp > YL)
     de["dx"], de["dy"] = de.logFC.clip(-XL, XL), de.mlp.clip(upper=YL)
+    return de
+
+
+def draw_volcano(ax, d, title):
+    """One volcano panel; returns the labelled transcripts."""
+    nsig = int((d["adj.P.Val"] < 0.05).sum())
+    for st in ("ns", "down", "up"):
+        s = d[(d.status == st) & ~d.capped]
+        ax.scatter(s.dx, s.dy, s=0.6, color=COL[st], alpha=0.6, lw=0, rasterized=True, zorder=2 if st == "ns" else 3)
+        c = d[(d.status == st) & d.capped]
+        ax.scatter(c.dx, c.dy, s=4, marker="^", facecolors="white", edgecolors=COL[st], lw=0.4, zorder=4, clip_on=False)
+    if nsig:
+        ax.axhline(-np.log10(d.loc[d["adj.P.Val"] < 0.05, "P.Value"].max()), color="#595959", ls="--", lw=0.5, zorder=1)
+    ax.axvline(0, color="#B3B3B3", lw=0.4, zorder=1)
+    lab = (d[(d["adj.P.Val"] < 0.05) & d.gene_label.notna() & (d.gene_label != "")]
+           .assign(a=lambda x: -x.logFC.abs()).sort_values(["status", "adj.P.Val", "a"]).groupby("status").head(3))
+    if len(lab):
+        place_labels(ax, list(zip(lab.dx, lab.dy)), list(lab.gene_label))
+    ax.set_xlim(-XL, XL); ax.set_ylim(0, YL); ax.set_xticks([-0.5, 0, 0.5]); ax.set_yticks(range(0, 26, 5))
+    ax.set_title(f"{title}\n{nsig:,} transcripts at FDR < 0.05", loc="center", fontsize=6)
+    return lab.assign(contrast=title)
+
+
+def legend_handles():
+    return [Line2D([], [], marker="o", ls="", color=COL["up"], ms=2.5, label="Higher expression (FDR < 0.05)"),
+            Line2D([], [], marker="o", ls="", color=COL["down"], ms=2.5, label="Lower expression (FDR < 0.05)"),
+            Line2D([], [], marker="o", ls="", color=COL["ns"], ms=2.5, label="Not significant"),
+            Line2D([], [], marker="^", ls="", mfc="white", mec="#555", ms=3, mew=0.4, label="Beyond axis limits")]
+
+
+def build(source=SOURCE, out_stem=OUT_STEM):
+    ns.apply()
+    de = load_de(source)
     fig, axs = plt.subplots(1, 3, figsize=(ns.DOUBLE, 64 * ns.MM), sharey=True)
     fig.subplots_adjust(left=0.065, right=0.99, top=0.84, bottom=0.24, wspace=0.08)
     manifest = []
     for j, (k, title) in enumerate(CONTRASTS.items()):
-        ax = axs[j]; d = de[de.Contrast == k]; nsig = int((d["adj.P.Val"] < 0.05).sum())
-        for st in ("ns", "down", "up"):
-            s = d[(d.status == st) & ~d.capped]
-            ax.scatter(s.dx, s.dy, s=0.6, color=COL[st], alpha=0.6, lw=0, rasterized=True, zorder=2 if st == "ns" else 3)
-            c = d[(d.status == st) & d.capped]
-            ax.scatter(c.dx, c.dy, s=4, marker="^", facecolors="white", edgecolors=COL[st], lw=0.4, zorder=4, clip_on=False)
-        if nsig:
-            ax.axhline(-np.log10(d.loc[d["adj.P.Val"] < 0.05, "P.Value"].max()), color="#595959", ls="--", lw=0.5, zorder=1)
-        ax.axvline(0, color="#B3B3B3", lw=0.4, zorder=1)
-        lab = (d[(d["adj.P.Val"] < 0.05) & d.gene_label.notna() & (d.gene_label != "")]
-               .assign(a=lambda x: -x.logFC.abs()).sort_values(["status", "adj.P.Val", "a"]).groupby("status").head(3))
-        if len(lab): place_labels(ax, list(zip(lab.dx, lab.dy)), list(lab.gene_label)); manifest.append(lab.assign(contrast=title))
-        ax.set_xlim(-XL, XL); ax.set_ylim(0, YL); ax.set_xticks([-0.5, 0, 0.5]); ax.set_yticks(range(0, 26, 5))
-        ax.set_title(f"{title}\n{nsig:,} transcripts at FDR < 0.05", loc="center", fontsize=6)
-        ns.panel_label(ax, "abc"[j], x=-0.04 if j else -0.16, y=1.13)
-    axs[1].set_xlabel("log₂ fold change"); axs[0].set_ylabel("−log₁₀ $P$")
-    fig.legend(handles=[Line2D([], [], marker="o", ls="", color=COL["up"], ms=2.5, label="Higher expression (FDR < 0.05)"),
-                        Line2D([], [], marker="o", ls="", color=COL["down"], ms=2.5, label="Lower expression (FDR < 0.05)"),
-                        Line2D([], [], marker="o", ls="", color=COL["ns"], ms=2.5, label="Not significant"),
-                        Line2D([], [], marker="^", ls="", mfc="white", mec="#555", ms=3, mew=0.4, label="Beyond axis limits")],
-               frameon=False, loc="lower center", ncol=4, bbox_to_anchor=(0.53, 0.0), handletextpad=0.2, columnspacing=1.2)
+        manifest.append(draw_volcano(axs[j], de[de.Contrast == k], title))
+        ns.panel_label(axs[j], "abc"[j], x=-0.04 if j else -0.16, y=1.13)
+    axs[1].set_xlabel("log₂ fold change"); axs[0].set_ylabel(r"$\mathsf{−log₁₀}\ P$")
+    fig.legend(handles=legend_handles(), frameon=False, loc="lower center", ncol=4, bbox_to_anchor=(0.53, 0.0),
+               handletextpad=0.2, columnspacing=1.2)
     out_stem.parent.mkdir(parents=True, exist_ok=True); ns.save(fig, str(out_stem)); plt.close(fig)
-    return pd.concat(manifest)[["contrast", "gene_label", "logFC", "P.Value", "adj.P.Val", "status"]] if manifest else None
+    return pd.concat(manifest)[["contrast", "gene_label", "logFC", "P.Value", "adj.P.Val", "status"]]
 
 
 if __name__ == "__main__":

@@ -90,7 +90,7 @@ for r, (m, cal) in enumerate([("singscore", True), ("FGSEA", False)]):
 cax = fig.add_subplot(gs[:, 4]); sm = plt.cm.ScalarMappable(cmap=CM, norm=plt.Normalize(-6, 6))
 cb = fig.colorbar(sm, cax=cax); cb.set_label("Standardized score", fontsize=5.5); cb.ax.tick_params(labelsize=5, width=0.4, length=1.5); cb.outline.set_linewidth(0.4)
 cax.set_position([0.94, 0.3, 0.012, 0.4])
-ns.save(fig, f"{FIG}/Fig4_pathway_landscape"); plt.close(fig)
+ns.save(fig, f"{FIG}/Fig3_pathway_landscape"); plt.close(fig)
 
 
 # ---------------- Fig. 5: calibration and agreement ----------------
@@ -131,7 +131,7 @@ for j, (m, a, b) in enumerate([("singscore", "New", "Existing"), ("singscore", "
     ax.set_title(f"{m}: {GS_[a]} vs {GS_[b]}", fontsize=6); ax.text(3.12, 0.88, "Beyond cap", fontsize=5, color="#777", ha="center")
     if j == 0: fig.legend(*ax.get_legend_handles_labels(), frameon=False, loc="lower center", bbox_to_anchor=(0.53, 0.0), ncol=3, handlelength=1.6, handletextpad=0.3, columnspacing=1.5)
     ns.panel_label(ax, "cde"[j], x=-0.22 if j == 0 else -0.14, y=1.03)
-ns.save(fig, f"{FIG}/Fig5_calibration_agreement"); plt.close(fig)
+ns.save(fig, f"{FIG}/Fig4_calibration_agreement"); plt.close(fig)
 
 # ============================ gene-level state ============================
 GSV = np.load(f"{OUT}/gene_state_{CLS}_{MODEL}.npz"); META = json.load(open(f"{OUT}/gene_meta_{CLS}_{MODEL}.json"))
@@ -177,7 +177,7 @@ for k, f in enumerate([0.1, 0.5, 1.0]):
     lax.scatter(0.05 + k * 0.3, 0.55, s=2 + 52 * f, c="#bbb", ec=INK if f >= 0.5 else "none", lw=0.4, clip_on=False); lax.text(0.1 + k * 0.3, 0.55, f"{f:.0%} called", va="center", fontsize=5.5)
 cax = fig.add_axes([0.76, 0.55 * 22 / (4.0 * nr + 30) - 0.004, 0.18, 0.008]); sm = plt.cm.ScalarMappable(cmap=CM, norm=plt.Normalize(-6, 6))
 cb = fig.colorbar(sm, cax=cax, orientation="horizontal"); cb.set_label("Mean diffused score", fontsize=5.5, labelpad=1); cb.ax.tick_params(labelsize=5, width=0.4, length=1.5, pad=1); cb.outline.set_linewidth(0.4)
-ns.save(fig, f"{FIG}/Fig6_gene_modules"); plt.close(fig)
+ns.save(fig, f"{FIG}/Fig5_gene_modules"); plt.close(fig)
 
 # ---------------- Supplementary Fig. 7: gene landscape ----------------
 NG = 300; SIG = 4.0
