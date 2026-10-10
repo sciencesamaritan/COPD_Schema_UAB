@@ -8,7 +8,7 @@
 
 This repository holds the **R scripts** (v.4.5) and **Python scripts** (v.3.11+) behind the manuscript *"Whole-Blood Transcriptomic Signatures Distinguish Multidimensional COPD Schema Reclassified Groups"*.
 
-The multidimensional COPD diagnostic schema (Bhatt et al., JAMA 2025) moves people in two directions. It brings in participants without airflow obstruction who carry imaging and symptom evidence of disease, and it moves out participants with obstruction who carry none. We asked whether the blood transcriptome moves with them. COPDGene participants fall into four groups:
+The multidimensional COPD diagnostic schema (Bhatt et al., JAMA 2025) reclassifies participants based on airflow obstruction and other evidence of disease. It identifies some participants without airflow obstruction as having COPD and potentially excludes others with airflow obstruction. We examined whether these reclassified groups show corresponding differences in whole-blood gene expression. COPDGene participants were assigned to four groups:
 
 - **No COPD**
 - **Newly diagnosed COPD:** no airflow obstruction, three or more minor criteria
