@@ -45,7 +45,7 @@ flowchart TD
 
     subgraph S2["2_Disease_Axis"]
         direction LR
-        B1["λ: through-origin scaling<br/>dilution and shared-reference corrections"] --> B2["Bootstrap CIs,<br/>variance partition"]
+        B1["λ: errors-in-variables slope<br/>dilution and shared-reference corrections"] --> B2["Bootstrap CIs,<br/>variance partition"]
         B1 --> B3["Axis-independent geometry:<br/>RMS distances, MDS, Spearman"]
     end
 
@@ -71,63 +71,9 @@ flowchart TD
     S6["6_Figures<br/>Figures 1 to 6, supplementary figures,<br/>Cytoscape network"]
 ```
 
-### Gene expression data processing
+The full methods are in the manuscript; the script descriptions below map each analysis step to its code.
 
-Whole-blood RNA sequencing data from COPDGene Study participants were obtained from Freeze 5, with raw gene-level counts quantified using Salmon against the GENCODE v37 annotation on the GRCh38.p13 reference genome. Samples were restricted to Visit 2 participants who passed quality control (`final.analyzed = 1`) and had complete data for all three COPD classification variables, smoking status, and peripheral blood cell differential percentages (n = 3,309). Gene-level counts were assembled into a `DGEList` object using edgeR. Lowly expressed genes were filtered once across all analyses using `filterByExpr` with a minimum count threshold of 50 and a minimum sample proportion of 0.9, applied under a covariate-only design (age, race, sex, smoking status, and library construction batch, `Lc.Batch`) so that every downstream model shares the same 16,554 transcripts. Library sizes were normalized using the trimmed mean of M-values (TMM) method via `calcNormFactors`. Log-transformed counts per million (log-CPM) were computed with a prior count of 2 for quality control (library size, TMM factors, PCA by batch and by schema class, and the voom mean-variance trend). Library batch is handled differently in the two workflows, as described below: the differential expression models carry `Lc.Batch` as a design covariate, whereas the single-sample pathway scores are computed on log-CPM from which `Lc.Batch` was removed with `removeBatchEffect`. Per-gene mean-centering is not applied in the main analysis.
-
-### COPD classification variables
-
-Three COPD classification schemes were compared, each encoding disease status as a four-level factor (0, 1, 2, 3) with level 0 as the reference: the original multidimensional schema (`DisCOPD`), the AI-derived visual CT classification (`DisCOPDAI`; primary), and the quantitative CT classification (`DisCOPDQuant`; emphysema ≥5%, Pi10 ≥2.24 mm; sensitivity). All three variables were merged onto the phenotype data, and only participants with non-missing values for all three classifications were retained so that every comparison runs on an identical participant set. Groups were assigned at Phase 1, the only visit with visual CT reads; blood was drawn at Phase 2.
-
-### Differential gene expression analysis
-
-Two linear models were specified for each classification variable. Model 1 adjusted for library construction batch (`Lc.Batch`), age, race, sex, and smoking status (`SmokCigNow`). Model 2 additionally included peripheral blood cell percentages (eosinophils, neutrophils, lymphocytes, and monocytes). For each model and classification variable, a design matrix was constructed, the `voom` transformation was applied to the TMM-normalized `DGEList` under that design to estimate the mean-variance trend and the per-observation precision weights, and the weighted linear model was fitted with `lmFit` on the voom object. Six contrasts were tested per classification variable: each disease group versus the control group (1 vs 0, 2 vs 0, 3 vs 0) and all pairwise comparisons among disease groups (1 vs 3, 2 vs 3, 1 vs 2). Contrasts were estimated using `contrasts.fit`, and moderated t-statistics and p-values were obtained via the empirical Bayes framework implemented in `eBayes`. Gene-level results were extracted using `topTable` with Benjamini-Hochberg false discovery rate (FDR) correction.
-
-### Gene set enrichment analysis
-
-For each contrast, genes were ranked by their full-precision moderated t-statistics (read from the fitted object, not the rounded table) and mapped from ENSEMBL versioned identifiers to Entrez gene IDs through an ensembldb annotation matched to the GENCODE v37 reference. When multiple ENSEMBL identifiers mapped to the same Entrez ID, the gene with the largest absolute t-statistic was retained. Pre-ranked gene set enrichment analysis was performed with the fgsea multilevel algorithm against five MSigDB collections obtained via msigdbr: Hallmark, Reactome, KEGG (KEGG_MEDICUS), ImmuneSigDB, and BioCarta, combined into one library and deduplicated by set name. Gene sets were filtered to include between 15 and 500 genes, and exact p-values were computed (`eps = 0`). Pathway-level results were adjusted for multiple testing using the Benjamini-Hochberg method. Gene symbols were validated against HGNC with biobouncer. Preranked enrichment is reported as a descriptive layer; the calibration below gives the reason.
-
-### Single-sample pathway scoring
-
-Single-sample pathway activity scores were computed using the singscore package. Four pathway collections were obtained from MSigDB: Reactome, KEGG (KEGG_MEDICUS), ImmuneSigDB, and BioCarta. Library batch was removed from the log-CPM matrix with `removeBatchEffect` from limma; per-gene mean-centering was not applied, because together with undirected scoring it suppresses pathway signal in the extreme-versus-control contrasts. The batch-corrected matrix was mapped from ENSEMBL versioned identifiers to gene symbols using a pre-built gene annotation map; when multiple ENSEMBL identifiers mapped to the same symbol, the gene with the highest average expression was retained. Genes were ranked within each sample using `rankGenes`. Pathway gene sets were retained when 15 to 500 of their genes overlapped the measured transcriptome and at least 50% of their annotated genes were present, so that each score represents the pathway rather than a fragment of it. All pathways were scored across all samples with `knownDirection = FALSE` (MSigDB pathway gene sets do not specify regulatory direction) and `centerScore = TRUE`, in a vectorized implementation of `simpleScore` that reproduces `multiScore`.
-
-The resulting pathway score matrix (pathways × samples) was treated as a feature matrix analogous to gene expression, with each pathway score representing a single-sample measure of pathway activity. This matrix was then regressed against the same COPD classification contrasts using limma: for each model (Model 1 and Model 2) and each classification variable, the same design matrices as the differential expression analysis were used, including `Lc.Batch`, and the standard limma pipeline (`lmFit` → `makeContrasts` → `contrasts.fit` → `eBayes` → `topTable`) was applied. No voom weights were used for pathway score regression, as the scores are continuous and approximately normally distributed. P-values were adjusted using the Benjamini-Hochberg FDR method.
-
-### Pathway evidence engine
-
-Pathway evidence from fgsea, singscore, and gene-level results was integrated for the 263 candidate pathways. Redundant pathways were collapsed, Leiden communities of gene overlap were identified, and pathway profiles were clustered using Ward.D2 on standardized three-contrast NES profiles, with the number of clusters selected by silhouette analysis. Leading-edge genes were extracted for each profile cluster, and graph-threshold stability of the partition was assessed by the adjusted Rand index.
-
-### Cross-classification comparisons
-
-To assess concordance across the three classification systems, pairwise overlaps of FDR-significant genes and pathways (adj. P < 0.05) were computed for each model. Effect-size concordance was evaluated by computing Pearson correlation coefficients of log-fold-change estimates between all pairs of classification variables for each matched contrast under Model 1. Model 1 and Model 2 effects were compared the same way.
-
-### Disease-axis scaling
-
-For the 7,515 transcripts significant in the established-COPD contrast (FDR < 0.05), the scaling coefficient λ was estimated as the through-origin regression of a group's log2 fold changes on the established-COPD log2 fold changes, with λ = 0 the no-COPD reference and λ = 1 the established-COPD profile. Standard errors were recovered from limma confidence intervals and verified against the moderated t-statistics. The denominator was corrected for regression dilution by subtracting the mean error variance, and the numerator for the shared-reference error correlation ρ = (1/n0)/√((1/ng + 1/n0)(1/nh + 1/n0)), which every contrast against the same no-COPD group induces. Confidence intervals were obtained from 2,000 transcript bootstraps, and the two coefficients were compared by a paired bootstrap of 10,000 replicates. Systematic variance was partitioned into on-axis and orthogonal components, per-transcript departures from the scaled expectation were tested by Wald tests with Benjamini-Hochberg control, and a sign-permutation null checked the estimator. Axis-independent geometry used pairwise root-mean-square log2 fold-change distances over the 7,781 transcripts significant in any disease contrast, classical multidimensional scaling, and Spearman correlations among the three moderated-t profiles.
-
-### Calibration
-
-P-values were converted to signed z-scores, z = sign(effect) · Φ⁻¹(1 − P/2), and the genomic-control inflation factor λGC = median(z²)/0.4549 was computed for fgsea, singscore, and limma in every contrast. The potentially excluded contrast, which has no differentially expressed transcripts, served as the null reference. For sets of m measured genes, the competitive set-mean z of limma t under independence was z0 = (t̄set − t̄all)/(st/√m), and the break-even inter-gene correlation ρ* = ((z0/1.96)² − 1)/(m − 1) followed from the variance inflation 1 + (m − 1)ρ.
-
-### Calibrated heat diffusion on the pathway graph
-
-The 1,232 Reactome, BioCarta, and KEGG pathways scored by both methods in all four contrasts, with at least 10 measured genes, were joined to their 10 nearest neighbors by Jaccard similarity of gene membership (symmetrized). With L = I − D^(−1/2) W D^(−1/2) = U diag(λ) Uᵀ, the heat kernel Ht = U diag(e^(−tλ)) Uᵀ was applied to each contrast's signed z-scores, and the scale cap was the first t (step 0.25) at which the median effective neighborhood (Σj Hij)²/Σj Hij² reached 20 sets (t = 2.25). Under no group difference, set statistics of independent genes have correlation Cij = |Gi ∩ Gj|/√(|Gi||Gj|); for z ~ N(0, C) the program statistic Ti(t) = (Ht z)i/√((Ht C Ht)ii) is standard normal at every scale. Each pathway's statistic was the minimum two-sided P over t ∈ {0, 0.25, …, 2.25}, referred to the pooled null distribution of the same minimum from 2,000 draws Fε (C = FFᵀ) through identical kernels, with Benjamini-Hochberg FDR across pathways and family-wise error from the null minimum over pathways and scales. Calibration used 40 simulated null maps and 25 maps with a planted 20-set program. Programs were greedy-modularity communities among called pathways, labeled by themes enriched among member sets relative to the universe.
-
-### Map agreement
-
-Agreement between contrasts was the Pearson correlation of H1 za and H1 zb, tested by Moran spectral randomization: random signs on the graph-Fourier coefficients of zb, rebuilt and diffused (1,000 draws), which preserves each map's power spectrum. The shared-reference null simulated pairs √ρr e0 + √(1 − ρr) e1,2 with e ~ N(0, C) and ρr ∈ {0.2, 0.3, 0.4}. Graph sensitivity used k = 5, 10, 20 and the overlap coefficient in place of Jaccard.
-
-### Gene-level network propagation
-
-Genes in Hallmark, Reactome, BioCarta, or KEGG_MEDICUS sets of 10 to 200 measured genes (8,046 genes; 1,756 sets) were joined by Jaccard similarity of their set-membership vectors (k = 10; scale cap 2.5), with z the moderated t. Under no differential expression z ~ N(0, R), with R the residual expression correlation common to all contrasts; its graph-Fourier power Pk = ukᵀ R uk was estimated from the potentially excluded contrast as (ukᵀ z)² smoothed over 201 adjacent eigenvectors. Null standard deviations were si(t) = (Σk Uik² e^(−2tλk) Pk)^(1/2), and 1,000 null draws U(√P ∘ ε) calibrated multiscale calls as above. An independent-gene null (Pk = 1) is reported for comparison. Power used shifts of 1.0 to 2.0 added to 40 or 100 graph-adjacent genes of the potentially excluded map (10 replicates per setting). Modules were greedy-modularity communities of at least 8 called genes, annotated by hypergeometric overlap with curated sets; layouts used t-SNE of diffusion-map coordinates and serve for display only.
-
-### Tables and figures
-
-Table 1 (Phase 2 characteristics) and the Phase 1 → Phase 2 migration table are built from the phenotype variables by the scripts in `5_Tables/`. Figures 1 to 6, the supplementary figures, and the Cytoscape pathway-overlap network are built by the scripts in `6_Figures/` and `4_Heat_Diffusion/`.
-
-### Software
-
-All R analyses were performed in R (v4.5.1) using the Bioconductor packages edgeR, limma, fgsea, singscore, GSEABase, and msigdbr, with igraph for community detection and biobouncer for HGNC symbol validation. Volcano plots were generated with EnhancedVolcano and ggplot2, and interactive tables were rendered with DT. The disease-axis geometry, heat diffusion, and gene propagation were implemented in Python (v3.11+) with numpy, scipy, pandas, networkx, scikit-learn, and matplotlib. Seeds are fixed in each script.
+**Software.** R 4.5.1 (edgeR, limma, fgsea, singscore, GSEABase, msigdbr, igraph, biobouncer, EnhancedVolcano, ggplot2, DT) and Python 3.11+ (numpy, scipy, pandas, networkx, scikit-learn, matplotlib). Seeds are fixed in each script.
 
 ---
 
