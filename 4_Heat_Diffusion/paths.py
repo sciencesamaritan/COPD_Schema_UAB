@@ -11,7 +11,7 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 CLS = "DisCOPDAI"      # case definition: AI-derived visual CT (primary); "DisCOPDQuant" for the sensitivity analysis
-MODEL = "Model_1"      # Model_1: age, race, sex, current smoking; Model_2 adds leukocyte percentages
+MODEL = "Model_1"      # Model_1: age, race, sex, smoking status; Model_2 adds leukocyte percentages
 
 DE_FILE = f"path/to/gene_de_{MODEL}_{CLS}_allresults.csv"
 SINGSCORE_FILE = f"path/to/singscore_{MODEL}_{CLS}_allresults.csv"

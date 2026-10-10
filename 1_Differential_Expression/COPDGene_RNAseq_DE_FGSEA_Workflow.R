@@ -8,7 +8,7 @@
 #      quantitative CT); complete-case cohort (n = 3,309)
 #   2. filterByExpr (min.count 50, min.prop 0.9), TMM normalization, QC
 #   3. limma-voom per Model x Classification:
-#        Model_1: batch + age + race + sex + current smoking
+#        Model_1: batch + age + race + sex + smoking status
 #        Model_2: Model_1 + eosinophil, neutrophil, lymphocyte, monocyte %
 #      contrasts: each disease group vs no COPD, and pairwise disease groups
 #   4. fgsea on moderated t (Hallmark, Reactome, KEGG_MEDICUS, ImmuneSigDB,

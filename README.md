@@ -87,7 +87,7 @@ flowchart TD
 3. **Pathway enrichment and participant-level scores**
    - **fgseaMultilevel** (v.1.36.2) on moderated t against MSigDB collections (`msigdbr` v.25.1.1; Hallmark, Reactome, BioCarta, KEGG_MEDICUS, ImmuneSigDB; set size 15–500).
    - **singscore** (undirected) on batch-corrected log-CPM, regressed on the same contrasts.
-   - Pathway evidence engine: redundancy collapse, Leiden communities, profile clustering (Ward.D2, silhouette).
+   - Pathway evidence engine: collapse redundant pathways, identify Leiden communities, and cluster pathway profiles using Ward.D2, with the number of clusters selected by silhouette analysis.
    - HGNC symbol validation (`biobouncer` v.0.1.4).
 
 4. **Disease-axis scaling**
@@ -229,16 +229,45 @@ flowchart TD
 
 ## 5. References & Tools
 
-- Bhatt SP, et al. Multidimensional COPD diagnostic schema. *JAMA* 2025. doi:10.1001/jama.2025.7358
-- Regan EA, et al. Genetic epidemiology of COPD (COPDGene) study design. *COPD* 2010.
-- Ritchie ME, et al. limma. *Nucleic Acids Res* 2015. Law CW, et al. voom. *Genome Biol* 2014.
-- Korotkevich G, et al. Fast gene set enrichment analysis (fgsea). *bioRxiv*.
-- Foroutan M, et al. singscore. *BMC Bioinformatics* 2018.
-- Liberzon A, et al. MSigDB Hallmark gene sets. *Cell Syst* 2015.
-- Wu D, Smyth GK. camera: competitive gene set test accounting for inter-gene correlation. *Nucleic Acids Res* 2012.
-- Devlin B, Roeder K. Genomic control for association studies. *Biometrics* 1999.
-- Kondor RI, Lafferty J. Diffusion kernels on graphs. *ICML* 2002. Cowen L, et al. Network propagation. *Nat Rev Genet* 2017.
-- Wagner HH, Dray S. Moran spectral randomization. *Methods Ecol Evol* 2015.
+**Cohort and diagnostic schema**
+- Bhatt SP, Abadi E, Anzueto A, et al. A multidimensional diagnostic approach for chronic obstructive pulmonary disease. *JAMA*. 2025;333(24):2164–2175. [doi:10.1001/jama.2025.7358](https://doi.org/10.1001/jama.2025.7358)
+- Regan EA, Hokanson JE, Murphy JR, et al. Genetic epidemiology of COPD (COPDGene) study design. *COPD*. 2010;7(1):32–43. [doi:10.3109/15412550903499522](https://doi.org/10.3109/15412550903499522)
+
+**Differential expression**
+- Robinson MD, McCarthy DJ, Smyth GK. edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. *Bioinformatics*. 2010;26(1):139–140. [doi:10.1093/bioinformatics/btp616](https://doi.org/10.1093/bioinformatics/btp616)
+- Robinson MD, Oshlack A. A scaling normalization method for differential expression analysis of RNA-seq data. *Genome Biol*. 2010;11(3):R25. [doi:10.1186/gb-2010-11-3-r25](https://doi.org/10.1186/gb-2010-11-3-r25)
+- Law CW, Chen Y, Shi W, Smyth GK. voom: precision weights unlock linear model analysis tools for RNA-seq read counts. *Genome Biol*. 2014;15(2):R29. [doi:10.1186/gb-2014-15-2-r29](https://doi.org/10.1186/gb-2014-15-2-r29)
+- Ritchie ME, Phipson B, Wu D, et al. limma powers differential expression analyses for RNA-sequencing and microarray studies. *Nucleic Acids Res*. 2015;43(7):e47. [doi:10.1093/nar/gkv007](https://doi.org/10.1093/nar/gkv007)
+
+**Pathway enrichment and participant-level scores**
+- Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting genome-wide expression profiles. *Proc Natl Acad Sci USA*. 2005;102(43):15545–15550. [doi:10.1073/pnas.0506580102](https://doi.org/10.1073/pnas.0506580102)
+- Korotkevich G, Sukhov V, Budin N, et al. Fast gene set enrichment analysis. *bioRxiv*. 2021:060012. [doi:10.1101/060012](https://doi.org/10.1101/060012)
+- Foroutan M, Bhuva DD, Lyu R, et al. Single sample scoring of molecular phenotypes. *BMC Bioinformatics*. 2018;19(1):404. [doi:10.1186/s12859-018-2435-4](https://doi.org/10.1186/s12859-018-2435-4)
+- Liberzon A, Birger C, Thorvaldsdóttir H, et al. The Molecular Signatures Database (MSigDB) hallmark gene set collection. *Cell Syst*. 2015;1(6):417–425. [doi:10.1016/j.cels.2015.12.004](https://doi.org/10.1016/j.cels.2015.12.004)
+- Traag VA, Waltman L, van Eck NJ. From Louvain to Leiden: guaranteeing well-connected communities. *Sci Rep*. 2019;9(1):5233. [doi:10.1038/s41598-019-41695-z](https://doi.org/10.1038/s41598-019-41695-z)
+
+**Calibration**
+- Devlin B, Roeder K. Genomic control for association studies. *Biometrics*. 1999;55(4):997–1004. [doi:10.1111/j.0006-341x.1999.00997.x](https://doi.org/10.1111/j.0006-341x.1999.00997.x)
+- Wu D, Smyth GK. Camera: a competitive gene set test accounting for inter-gene correlation. *Nucleic Acids Res*. 2012;40(17):e133. [doi:10.1093/nar/gks461](https://doi.org/10.1093/nar/gks461)
+- Benjamini Y, Hochberg Y. Controlling the false discovery rate: a practical and powerful approach to multiple testing. *J R Stat Soc B*. 1995;57(1):289–300.
+- Westfall PH, Young SS. *Resampling-Based Multiple Testing: Examples and Methods for p-Value Adjustment*. Wiley; 1993.
+
+**Network propagation and heat diffusion**
+- Kondor RI, Lafferty J. Diffusion kernels on graphs and other discrete input spaces. In: *Proceedings of the 19th International Conference on Machine Learning (ICML)*. 2002:315–322.
+- Coifman RR, Lafon S, Lee AB, et al. Geometric diffusions as a tool for harmonic analysis and structure definition of data: diffusion maps. *Proc Natl Acad Sci USA*. 2005;102(21):7426–7431. [doi:10.1073/pnas.0500334102](https://doi.org/10.1073/pnas.0500334102)
+- Cowen L, Ideker T, Raphael BJ, Sharan R. Network propagation: a universal amplifier of genetic associations. *Nat Rev Genet*. 2017;18(9):551–562. [doi:10.1038/nrg.2017.38](https://doi.org/10.1038/nrg.2017.38)
+- Wagner HH, Dray S. Generating spatially constrained null models for irregularly spaced data using Moran spectral randomization methods. *Methods Ecol Evol*. 2015;6(10):1169–1178.
+- Vos de Wael R, Benkarim O, Paquola C, et al. BrainSpace: a toolbox for the analysis of macroscale gradients in neuroimaging and connectomics datasets. *Commun Biol*. 2020;3(1):103. [doi:10.1038/s42003-020-0794-7](https://doi.org/10.1038/s42003-020-0794-7)
+- Clauset A, Newman MEJ, Moore C. Finding community structure in very large networks. *Phys Rev E*. 2004;70(6):066111.
+
+**Network visualization**
+- Shannon P, Markiel A, Ozier O, et al. Cytoscape: a software environment for integrated models of biomolecular interaction networks. *Genome Res*. 2003;13(11):2498–2504. [doi:10.1101/gr.1239303](https://doi.org/10.1101/gr.1239303)
+
+**Software**
+- R (v.4.5): [limma](https://bioconductor.org/packages/limma), [edgeR](https://bioconductor.org/packages/edgeR), [fgsea](https://bioconductor.org/packages/fgsea), [singscore](https://bioconductor.org/packages/singscore), [msigdbr](https://cran.r-project.org/package=msigdbr), [igraph](https://r.igraph.org), [ComplexHeatmap](https://bioconductor.org/packages/ComplexHeatmap), [ggplot2](https://ggplot2.tidyverse.org), biobouncer (HGNC symbol validation).
+- Python (v.3.11+): [NumPy](https://numpy.org), [SciPy](https://scipy.org), [pandas](https://pandas.pydata.org), [NetworkX](https://networkx.org), [scikit-learn](https://scikit-learn.org), [Matplotlib](https://matplotlib.org).
+- [Cytoscape](https://cytoscape.org) (CyREST) for the pathway-overlap network.
+- Data: [COPDGene](https://www.copdgene.org) and [dbGaP](https://www.ncbi.nlm.nih.gov/gap/); gene sets from [MSigDB](https://www.gsea-msigdb.org/gsea/msigdb), [Reactome](https://reactome.org) and [KEGG](https://www.genome.jp/kegg/); symbols from [HGNC](https://www.genenames.org).
 
 ---
 

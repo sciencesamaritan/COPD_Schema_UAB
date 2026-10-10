@@ -9,7 +9,7 @@
 #   2. filterByExpr (min.count 50, min.prop 0.9), TMM normalization, QC
 #   3. batch-corrected log-CPM; singscore (undirected; sets of 15-500
 #      measured genes; knownDirection = FALSE); scores regressed with limma per Model x Classification:
-#        Model_1: batch + age + race + sex + current smoking
+#        Model_1: batch + age + race + sex + smoking status
 #        Model_2: Model_1 + eosinophil, neutrophil, lymphocyte, monocyte %
 #      contrasts: each disease group vs no COPD, and pairwise disease groups
 #   4. Benjamini-Hochberg control across 5,995 sets
