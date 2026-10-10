@@ -6,7 +6,7 @@ Reads the outputs of scripts 01-05 (same inputs as 06 and 07); only the drawing 
 """
 import sys, os, json, re
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
-sys.path.insert(0, os.path.join(HERE, "..", "5_Tables_Figures"))
+sys.path.insert(0, os.path.join(HERE, "..", "6_Figures"))
 import numpy as np, pandas as pd, matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt

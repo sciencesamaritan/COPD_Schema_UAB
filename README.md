@@ -1,4 +1,4 @@
-# Newly diagnosed and potentially excluded COPD occupy graded positions on the established-COPD blood transcriptomic axis
+# Whole-Blood Transcriptomic Signatures Distinguish Multidimensional COPD Schema Reclassified Groups
 
 ### Whole-Blood RNA-seq Analysis and Calibrated Pathway Heat Diffusion in COPDGene
 
@@ -6,7 +6,7 @@
 
 ## 1. Summary
 
-This repository provides the **R scripts** (v.4.5) and **Python scripts** (v.3.11+) used for the analyses in the manuscript *"Newly diagnosed and potentially excluded COPD occupy graded positions on the established-COPD blood transcriptomic axis"*.
+This repository provides the **R scripts** (v.4.5) and **Python scripts** (v.3.11+) used for the analyses in the manuscript *"Whole-Blood Transcriptomic Signatures Distinguish Multidimensional COPD Schema Reclassified Groups"*.
 
 The study compares whole-blood transcriptomes of COPDGene participants grouped by the multidimensional COPD diagnostic schema (Bhatt et al., JAMA 2025) into four groups:
 - **no COPD**
@@ -67,8 +67,10 @@ No participant-level data are included. COPDGene data are available to qualified
    - **Calibration:** λ<sub>GC</sub> = median(z²)/0.455; break-even inter-gene correlation ρ* = ((z/1.96)² − 1)/(m − 1).
    - **Robustness:** k = 5/10/20, Jaccard vs overlap coefficient.
 
-6. **Tables and figures**
-   - Table 1 (Phase 2 characteristics).
+6. **Tables**
+   - Table 1 (Phase 2 characteristics) and the Phase 1 → Phase 2 migration table.
+
+7. **Figures**
    - Figures 1–6 and supplementary figures.
    - Cytoscape pathway-overlap network.
 
@@ -128,14 +130,20 @@ No participant-level data are included. COPDGene data are available to qualified
 - **`05_Calibration_BreakEven_Correlation.py`**: Break-even inter-gene correlation for every tested pathway.
 - **`06_Figures_Pathway_Diffusion.py`**, **`07_Figures_Gene_Propagation.py`**: Diffusion figures (Figures 4–6, Supplementary Figures 6–9).
 
-### `5_Tables_Figures/`
+### `5_Tables/`
 - **`copdgene_phenotypes.py`**, **`multidimensional_schema.py`**, **`Table1_Phase2_Characteristics.py`**: The multidimensional schema computed from phenotype variables, which:
   - validates against the published Phase 1 counts;
   - classifies participants at Phase 2;
   - tabulates Phase 1 → Phase 2 migration;
   - builds Table 1.
+
+  The other manuscript tables are written by the analysis scripts that produce them: the disease-axis tables by `2_Disease_Axis/run_reproduction.R`, and the calibration, program, break-even, robustness and gene-module tables by `4_Heat_Diffusion/02_` to `05_`.
+
+### `6_Figures/`
+- **`nature_style.py`**: Shared figure style (fonts, sizes, palette) imported by the Python figure scripts here and in `4_Heat_Diffusion/`.
 - **`Fig1_Schema_Cohort.py`**: Figure 1 (schema cross-classification and cohort flow).
-- **`Fig3_Volcano_Plots.R`**: Figure 3 (three-contrast volcano plots).
+- **`Fig2_Axis_Volcano_Combined.py`**: Combined axis-geometry and volcano figure, assembled from `2_Disease_Axis/Fig2_Disease_Axis_Geometry.py` and `Fig3_Volcano_Plots.py` without refitting.
+- **`Fig3_Volcano_Plots.R`**, **`Fig3_Volcano_Plots.py`**: Figure 3 (three-contrast volcano plots).
 - **`Pathway_Cluster_Figure.py`**: Pathway-profile cluster figure.
 - **`Cytoscape_Network_Export.py`**, **`Cytoscape_Render.py`**: Pathway-overlap network export and CyREST rendering.
 
@@ -175,9 +183,9 @@ No participant-level data are included. COPDGene data are available to qualified
    python  4_Heat_Diffusion/05_Calibration_BreakEven_Correlation.py
    python  4_Heat_Diffusion/06_Figures_Pathway_Diffusion.py
    python  4_Heat_Diffusion/07_Figures_Gene_Propagation.py
-   python  5_Tables_Figures/Table1_Phase2_Characteristics.py
+   python  5_Tables/Table1_Phase2_Characteristics.py
    ```
-   The figure scripts in `2_`, `3_` and `5_` run after the analyses they plot. Seeds are fixed in each script.
+   The figure scripts in `2_`, `3_`, `4_` and `6_Figures/` run after the analyses they plot. Seeds are fixed in each script.
 
 ---
 
